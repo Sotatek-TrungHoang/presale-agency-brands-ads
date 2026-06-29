@@ -16,7 +16,8 @@ verify, 2FA, lockout) và granular RBAC đều thiếu.
 
 ## Current State (verified)
 - ✅ **Admin login** — Filament `/admin/login`, email+password, "remember me", show/hide password. Hoạt động OK.
-- ✅ **Admin users + roles** — `Users` resource: email, first/last name, password, **role selector (listbox)**. Vậy đã có khái niệm role. (evidence: `users/create`)
+- 🔴 **Admin users KHÔNG có RBAC** *(đã chỉnh theo black-box)* — form create/edit `Users` chỉ gồm Title, Email, first/last name, Password. **Không có field role/permission**; cái "role selector" trước đây là đọc nhầm dropdown **Title** (Mr/Mrs…). Cột "Type" trong list là giá trị *derived* (suy ra). (evidence: `evidences/blackbox/t4-user-roles.png`)
+- 🟡 **Identity nhiều khả năng polymorphic** — "Type" derived (Admin/applicant/advertiser) gợi ý có các user table/subtype riêng, không phải một users table duy nhất. Confirm qua source — điều này quyết định thiết kế multi-guard.
 - 🟡 **Brand accounts** — form tạo Brand có Contact block (first/last/email/phone/DOB/**password**) → brand có một login identity đi kèm. (evidence: `advertisers/create`)
 - 🟡 **Candidate accounts** — form tạo Candidate có first/last/email/phone/DOB/**password** → candidate login identity tồn tại. (evidence: `applicants/create`)
 - 🔴 Không có **login surface** cho brand/candidate (account được tạo nhưng không có chỗ nào để authenticate).
@@ -35,7 +36,7 @@ verify, 2FA, lockout) và granular RBAC đều thiếu.
 | # | Feature | Current | Target | Gap |
 |---|---------|---------|--------|-----|
 | 1.1 | Admin login | ✅ | ✅ | — |
-| 1.2 | Admin roles/permissions | 🟡 role field | Granular RBAC (ops/finance/compliance) | Permission model + policies + UI |
+| 1.2 | Admin roles/permissions | 🔴 no RBAC (đã chỉnh) | Granular RBAC (ops/finance/compliance) | Full permission model + policies + UI |
 | 1.3 | Brand login portal | 🔴 (account đã có) | Dedicated guard + login UI | Auth guard, login/logout, middleware |
 | 1.4 | Candidate login portal | 🔴 (account đã có) | Dedicated guard + login UI | Auth guard, login/logout, middleware |
 | 1.5 | Registration / invite | 🔴 | Brand invite + candidate self-register | Flows, tokens, gating |

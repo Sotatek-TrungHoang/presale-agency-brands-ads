@@ -24,8 +24,14 @@ platform. Goal: replace hand-wavy "build the rest" with a concrete inventory —
 - **Business model:** two-sided recruitment marketplace (Brands ↔ Candidates), agency takes
   commission both sides (Brand Charge %, Candidate Charge %).
 - **Evidence base:** `tidal-teardown-live-findings.md`, `tidal-agency-analysis.md`,
-  `evidences/*.png` (11 screenshots), plus deep live crawl of every resource create/edit
-  form and the System settings page on 2026-06-29.
+  `evidences/*.png` (11 screenshots), deep live crawl of every resource create/edit
+  form and the System settings page, **plus a 4-agent black-box behavioral test**
+  (`tidal-blackbox-test-findings.md`, `evidences/blackbox/*.png`, 47 screenshots) — all 2026-06-29.
+- **Black-box corrections applied** (behavioral, not UI-only): Application CRUD + aggregation
+  logic *works* (not bare scaffold); invoice/payslip generation *confirmed absent* (no trigger anywhere);
+  candidate evidence capture (ID/video/contract) *is real* → a candidate onboarding flow likely exists;
+  Declarations create is *broken* (server upload bug); **admin has NO RBAC** (earlier "role selector" was
+  a misread of the Title field — corrected).
 - **Scope note:** this document is a **feature/gap map only** — no man-day or cost figures
   (per request). It is the input for a later estimation/roadmap pass.
 
@@ -48,13 +54,19 @@ The platform has a **solid data-model + admin-CRUD spine** but the **transaction
 muscles and all self-service surfaces are absent**:
 
 - ✅ **Spine exists:** rich Advert model (pricing/charges/shifts/address), deep Candidate
-  model (4-tab profile, references, compliance status), Brand model, admin RBAC, **and a
-  fully-configured System settings** (charge %, references-required, invoice bank/terms,
-  applicant + advertiser **contract templates**). Brand & Candidate records already carry
-  **login user accounts** (email + password).
-- 🔴 **Core transaction loop is empty scaffolding:** Applications, Invoices, Payslips lists
-  are all **0 records** — matching → booking → invoice → payslip has never run. These are
-  empty Filament resources, not finished features.
+  model (4-tab profile, references, **real ID/video/contract evidence**, compliance status),
+  Brand model, **and a fully-configured System settings** (charge %, references-required,
+  invoice bank/terms, applicant + advertiser **contract templates**). Brand & Candidate records
+  carry **login user accounts**. Application CRUD + aggregation (advert.accepted_application,
+  candidate counts) **works** — verified by black-box.
+- 🔴 **Core transaction loop stops after Application:** Application persists + updates relations,
+  but there is **no Booking entity**, advert status does **not** auto-transition, and **no
+  invoice/payslip generation trigger exists anywhere** (verified — not just empty lists).
+- ⚠️ **NEW signal:** candidate records hold real video-verification + ID image + signed contract
+  → a **candidate onboarding/capture flow likely already exists** outside the admin. Investigate —
+  it could materially reduce P3/P6 scope.
+- 🔴 **No admin RBAC** (corrected): user form has no role/permission field; identity is likely
+  polymorphic (separate applicant/advertiser/admin tables).
 - 🔴 **No self-service:** no Brand portal, no Candidate portal — accounts exist but there is
   nowhere for them to log in. Everything is admin-operated.
 - 🔴 **Compliance unconfigured:** Required Evidence + Declarations tables empty; Job Roles =

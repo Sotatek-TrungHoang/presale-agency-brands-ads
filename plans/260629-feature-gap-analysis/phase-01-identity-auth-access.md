@@ -16,7 +16,8 @@ verify, 2FA, lockout) and granular RBAC are absent.
 
 ## Current State (verified)
 - ✅ **Admin login** — Filament `/admin/login`, email+password, "remember me", show/hide password. Works.
-- ✅ **Admin users + roles** — `Users` resource: email, first/last name, password, **role selector (listbox)**. So a role concept exists. (evidence: `users/create`)
+- 🔴 **Admin users have NO RBAC** *(corrected by black-box)* — `Users` create/edit form is only Title, Email, first/last name, Password. There is **no role/permission field**; the earlier "role selector" was a misread of the **Title** dropdown (Mr/Mrs…). The list "Type" column is a *derived* value. (evidence: `evidences/blackbox/t4-user-roles.png`)
+- 🟡 **Identity likely polymorphic** — the derived "Type" (Admin/applicant/advertiser) suggests separate user tables/subtypes, not one users table. Confirm via source — it decides multi-guard design.
 - 🟡 **Brand accounts** — Brand create form includes a Contact block (first/last/email/phone/DOB/**password**) → brand has an associated login identity. (evidence: `advertisers/create`)
 - 🟡 **Candidate accounts** — Candidate create includes first/last/email/phone/DOB/**password** → candidate login identity exists. (evidence: `applicants/create`)
 - 🔴 No brand/candidate **login surface** (accounts created but nowhere to authenticate).
@@ -35,7 +36,7 @@ verify, 2FA, lockout) and granular RBAC are absent.
 | # | Feature | Current | Target | Gap |
 |---|---------|---------|--------|-----|
 | 1.1 | Admin login | ✅ | ✅ | — |
-| 1.2 | Admin roles/permissions | 🟡 role field | Granular RBAC (ops/finance/compliance) | Permission model + policies + UI |
+| 1.2 | Admin roles/permissions | 🔴 no RBAC (corrected) | Granular RBAC (ops/finance/compliance) | Full permission model + policies + UI |
 | 1.3 | Brand login portal | 🔴 (account exists) | Dedicated guard + login UI | Auth guard, login/logout, middleware |
 | 1.4 | Candidate login portal | 🔴 (account exists) | Dedicated guard + login UI | Auth guard, login/logout, middleware |
 | 1.5 | Registration / invite | 🔴 | Brand invite + candidate self-register | Flows, tokens, gating |

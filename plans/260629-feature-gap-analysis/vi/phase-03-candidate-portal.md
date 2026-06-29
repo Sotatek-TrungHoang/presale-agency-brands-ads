@@ -21,6 +21,11 @@ nên là surface có traffic cao nhất và bắt buộc phải mobile-responsiv
   hiện đang được hoàn tất *bởi admin*, không phải candidate.
 - 🔴 Không có app phía candidate: no profile self-edit, no document upload, no job search, no apply,
   no booking accept, no timesheet, no payslip view.
+- ⚠️ **NHƯNG — tín hiệu mạnh cho thấy một candidate capture flow đã tồn tại sẵn** *(black-box)*: bản ghi candidate chứa
+  **video-verification + ID image + signed contract thật** (`evidences/blackbox/t2-candidate-identification-tab.png`,
+  `t2-candidate-contracts-tab.png`). Dữ liệu đó không thể nhập bằng tay — nhiều khả năng có một pipeline onboarding/capture
+  hướng candidate chạy bên ngoài admin. **Điều tra trước khi sizing phase này** — nếu candidate front-end
+  đã tồn tại, phần lớn 3.2/3.4/3.6 co từ 🔴 xuống 🟡. Đây là ẩn số có giá trị cao nhất.
 
 ## Production-Grade Target
 - **Onboarding wizard**: personal details, address, upload right-to-work evidence, qualifications,

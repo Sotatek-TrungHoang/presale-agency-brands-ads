@@ -14,11 +14,15 @@ dependencies: [4, 6]
 confirmed → shift happens. This is **empty scaffolding today** and is the single biggest gap:
 without it there is no income, no invoice, no payslip.
 
-## Current State (verified)
-- 🔴 **Applications: 0 records** despite 9 candidates + 1 advert. The loop has never run. (evidence: `07-applications-empty.png`)
-- 🟡 Application create form is minimal: 3 listboxes (advert / candidate / status) + "Actioned at". (evidence: `applications/create`)
-- 🟡 Advert detail shows an "Applications" count column and "Accepted application" field → relationship modeled.
-- 🔴 No matching, no offer/accept handshake, no booking entity visible, no allocation, no clash detection.
+## Current State (verified — incl. black-box behavioral test)
+- ✅ **Application CRUD + aggregation WORKS** *(black-box: created an Accepted application, observed effects, then deleted)*:
+  setting status=Accepted updated **advert.accepted_application** (= the candidate) and incremented the
+  **candidate's Accepted count**. So the entity + relationships + aggregation logic are real, not a bare scaffold.
+  (evidence: `evidences/blackbox/t1-application-create.png`, `t1-advert-1.png`, `t1-candidates-list.png`)
+- 🔴 **No Booking/Allocation entity** — the relationship is application↔advert↔candidate only; no separate confirmed-assignment object.
+- 🔴 **No state side-effects** — advert status did **not** auto-move to "Filled" on an Accepted application.
+- 🔴 **No downstream trigger** — no "Allocate / Confirm booking / Generate invoice/payslip" action anywhere; Invoices/Payslips stayed empty. (evidence: `t1-invoices-after.png`, `t1-payslips-after.png`)
+- 🔴 No matching/eligibility, no offer/accept handshake, no availability, no clash detection.
 
 ## Production-Grade Target
 - **Application**: candidate→advert with status lifecycle (applied → shortlisted → offered →
@@ -35,7 +39,7 @@ without it there is no income, no invoice, no payslip.
 ## Feature Gap Matrix
 | # | Feature | Current | Target | Gap |
 |---|---------|---------|--------|-----|
-| 5.1 | Application entity | 🟡 bare scaffold | Full status lifecycle + audit | Logic, transitions, events |
+| 5.1 | Application entity | 🟡 CRUD+aggregation works | Full status lifecycle + audit | Extend status lifecycle, events (base exists) |
 | 5.2 | Candidate apply | 🔴 | From candidate portal | Depends on P3 |
 | 5.3 | Matching/eligibility | 🔴 | Compliance+role+availability filter | Eligibility engine |
 | 5.4 | Suggestions/ranking | 🔴 | Suggest best-fit candidates | Scoring (optional) |

@@ -21,6 +21,11 @@ so it is the highest-traffic surface and must be mobile-responsive.
   that is currently completed *by admin*, not the candidate.
 - 🔴 No candidate-facing app: no profile self-edit, no document upload, no job search, no apply,
   no booking accept, no timesheet, no payslip view.
+- ⚠️ **BUT — strong signal a candidate capture flow already exists** *(black-box)*: candidate records hold
+  **real video-verification + ID image + signed contract** (`evidences/blackbox/t2-candidate-identification-tab.png`,
+  `t2-candidate-contracts-tab.png`). That data did not appear by hand — some candidate-facing onboarding/capture
+  pipeline likely runs outside the admin. **Investigate before sizing this phase** — if a candidate front-end
+  already exists, large parts of 3.2/3.4/3.6 shrink from 🔴 to 🟡. This is the single highest-value unknown.
 
 ## Production-Grade Target
 - **Onboarding wizard**: personal details, address, right-to-work evidence upload, qualifications,
